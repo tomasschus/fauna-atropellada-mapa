@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<title>Visitas a parques vs atropellamientos — Misiones</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; background:#f7f7f8; color:#222; }
+  h1 { margin: 0 0 8px; font-size: 20px; }
+  .sub { color:#555; margin-bottom: 16px; font-size: 13px; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .card { background:#fff; border-radius:8px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+  .card h2 { font-size:14px; margin: 0 0 12px; color:#333; }
+  .kpis { display:flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+  .kpi { background:#fff; padding:10px 14px; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,.08); font-size:13px; }
+  .kpi b { display:block; font-size:18px; }
+  .neg { color:#c0392b; } .pos { color:#27ae60; }
+  canvas { max-width:100%; }
+  footer { color:#666; font-size:12px; margin-top:16px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+</style></head><body>
+<h1>Visitas a parques de Misiones vs atropellamientos de fauna</h1>
+<div class="sub">Cruce mensual. Visitas: <code>parques_misiones.csv</code> (5 áreas, sumadas). Atropellamientos: Red Argentina de Monitoreo de Fauna Atropellada, filtrados por point-in-polygon dentro de Misiones.</div>
+
+<div id="kpis" class="kpis"></div>
+
+<div class="grid">
+  <div class="card">
+    <h2>Serie temporal (doble eje)</h2>
+    <canvas id="ts"></canvas>
+  </div>
+  <div class="card">
+    <h2>Dispersión + regresión lineal</h2>
+    <canvas id="sc"></canvas>
+  </div>
+</div>
+
+<footer>Generado a partir de <code>all_entries.json</code> y <code>parques_misiones.csv</code>. Coeficiente de Pearson sobre los meses con ambos datos.</footer>
+
+<script>
+const D = {"joined": [{"month": "2015-05", "visitas": 16205, "accidentes": 3}, {"month": "2015-08", "visitas": 21511, "accidentes": 2}, {"month": "2015-10", "visitas": 18492, "accidentes": 1}, {"month": "2016-01", "visitas": 31210, "accidentes": 1}, {"month": "2016-04", "visitas": 9084, "accidentes": 1}, {"month": "2016-05", "visitas": 8612, "accidentes": 2}, {"month": "2016-09", "visitas": 25986, "accidentes": 1}, {"month": "2017-06", "visitas": 12656, "accidentes": 2}, {"month": "2018-03", "visitas": 23336, "accidentes": 1}, {"month": "2018-04", "visitas": 25997, "accidentes": 1}, {"month": "2018-06", "visitas": 11287, "accidentes": 2}, {"month": "2018-11", "visitas": 15434, "accidentes": 1}, {"month": "2019-05", "visitas": 12421, "accidentes": 1}, {"month": "2019-07", "visitas": 54746, "accidentes": 1}, {"month": "2019-08", "visitas": 24804, "accidentes": 1}, {"month": "2019-09", "visitas": 28659, "accidentes": 6}, {"month": "2019-10", "visitas": 23842, "accidentes": 4}, {"month": "2019-11", "visitas": 18241, "accidentes": 4}, {"month": "2020-01", "visitas": 36864, "accidentes": 6}, {"month": "2020-02", "visitas": 33236, "accidentes": 8}, {"month": "2020-03", "visitas": 8219, "accidentes": 4}, {"month": "2020-07", "visitas": 418, "accidentes": 3}, {"month": "2020-08", "visitas": 7575, "accidentes": 7}, {"month": "2020-09", "visitas": 3695, "accidentes": 4}, {"month": "2020-10", "visitas": 5393, "accidentes": 6}, {"month": "2020-11", "visitas": 7099, "accidentes": 18}, {"month": "2020-12", "visitas": 7844, "accidentes": 16}, {"month": "2021-01", "visitas": 24314, "accidentes": 16}, {"month": "2021-02", "visitas": 29320, "accidentes": 18}, {"month": "2021-03", "visitas": 16101, "accidentes": 18}, {"month": "2021-04", "visitas": 18074, "accidentes": 9}, {"month": "2021-05", "visitas": 9791, "accidentes": 36}, {"month": "2021-06", "visitas": 4416, "accidentes": 30}, {"month": "2021-07", "visitas": 38340, "accidentes": 78}, {"month": "2021-08", "visitas": 27739, "accidentes": 63}, {"month": "2021-09", "visitas": 20026, "accidentes": 126}, {"month": "2021-10", "visitas": 19571, "accidentes": 93}, {"month": "2021-11", "visitas": 27444, "accidentes": 178}, {"month": "2021-12", "visitas": 22879, "accidentes": 142}, {"month": "2022-01", "visitas": 52252, "accidentes": 89}, {"month": "2022-02", "visitas": 47961, "accidentes": 59}, {"month": "2022-03", "visitas": 23031, "accidentes": 68}, {"month": "2022-04", "visitas": 31308, "accidentes": 51}, {"month": "2022-05", "visitas": 19390, "accidentes": 47}, {"month": "2022-06", "visitas": 21902, "accidentes": 36}, {"month": "2022-07", "visitas": 74138, "accidentes": 73}, {"month": "2022-08", "visitas": 27484, "accidentes": 41}, {"month": "2022-09", "visitas": 38012, "accidentes": 64}, {"month": "2022-10", "visitas": 29249, "accidentes": 116}, {"month": "2022-11", "visitas": 30475, "accidentes": 144}, {"month": "2022-12", "visitas": 17406, "accidentes": 167}, {"month": "2023-01", "visitas": 52680, "accidentes": 120}, {"month": "2023-02", "visitas": 45402, "accidentes": 55}, {"month": "2023-03", "visitas": 23085, "accidentes": 83}, {"month": "2023-04", "visitas": 37833, "accidentes": 89}, {"month": "2023-05", "visitas": 25702, "accidentes": 129}, {"month": "2023-06", "visitas": 33151, "accidentes": 84}, {"month": "2023-07", "visitas": 75071, "accidentes": 110}, {"month": "2023-08", "visitas": 29901, "accidentes": 87}, {"month": "2023-09", "visitas": 31775, "accidentes": 141}, {"month": "2023-10", "visitas": 33905, "accidentes": 124}, {"month": "2023-11", "visitas": 20482, "accidentes": 170}, {"month": "2023-12", "visitas": 13741, "accidentes": 87}, {"month": "2024-01", "visitas": 30247, "accidentes": 1731}, {"month": "2024-02", "visitas": 23007, "accidentes": 117}, {"month": "2024-03", "visitas": 22292, "accidentes": 308}, {"month": "2024-04", "visitas": 12588, "accidentes": 164}, {"month": "2024-05", "visitas": 9108, "accidentes": 70}, {"month": "2024-06", "visitas": 16984, "accidentes": 46}, {"month": "2024-07", "visitas": 42951, "accidentes": 29}, {"month": "2024-08", "visitas": 18311, "accidentes": 54}, {"month": "2024-09", "visitas": 25181, "accidentes": 71}, {"month": "2024-10", "visitas": 24830, "accidentes": 73}, {"month": "2024-11", "visitas": 19363, "accidentes": 158}, {"month": "2024-12", "visitas": 11260, "accidentes": 83}], "r": 0.1092713150153635, "slope": 0.0015281879693241135, "intercept": 43.15412939711175, "n": 75, "total_misiones": 7229};
+
+document.getElementById('kpis').innerHTML = `
+  <div class="kpi">Meses cruzados <b>${D.n}</b></div>
+  <div class="kpi">Atropellamientos en Misiones <b>${D.total_misiones.toLocaleString('es-AR')}</b></div>
+  <div class="kpi">Correlación de Pearson <b class="${D.r>=0?'pos':'neg'}">${D.r.toFixed(3)}</b></div>
+  <div class="kpi">Pendiente (acc / visita) <b>${D.slope.toExponential(2)}</b></div>
+`;
+
+const labels = D.joined.map(d => d.month);
+const visitas = D.joined.map(d => d.visitas);
+const acc = D.joined.map(d => d.accidentes);
+
+new Chart(document.getElementById('ts'), {
+  data: {
+    labels,
+    datasets: [
+      { type:'line', label:'Visitas', data:visitas, borderColor:'#2980b9', backgroundColor:'rgba(41,128,185,.1)', yAxisID:'y1', tension:.25, pointRadius:2 },
+      { type:'line', label:'Atropellamientos', data:acc, borderColor:'#c0392b', backgroundColor:'rgba(192,57,43,.1)', yAxisID:'y2', tension:.25, pointRadius:2 },
+    ]
+  },
+  options: {
+    interaction: { mode:'index', intersect:false },
+    stacked: false,
+    scales: {
+      y1: { type:'linear', position:'left',  title:{display:true,text:'Visitas'} },
+      y2: { type:'linear', position:'right', grid:{drawOnChartArea:false}, title:{display:true,text:'Atropellamientos'} },
+    },
+  }
+});
+
+const minV = Math.min(...visitas), maxV = Math.max(...visitas);
+new Chart(document.getElementById('sc'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      { label:'Mes', data: D.joined.map(d=>({x:d.visitas, y:d.accidentes, month:d.month})),
+        backgroundColor:'rgba(41,128,185,.7)', pointRadius:5 },
+      { type:'line', label:`Regresión (r=${D.r.toFixed(3)})`,
+        data:[{x:minV, y: D.slope*minV+D.intercept},{x:maxV, y: D.slope*maxV+D.intercept}],
+        borderColor:'#c0392b', borderWidth:2, pointRadius:0, fill:false }
+    ]
+  },
+  options: {
+    scales: {
+      x: { title:{display:true, text:'Visitas mensuales (todas las áreas)'} },
+      y: { title:{display:true, text:'Atropellamientos / mes'} },
+    },
+    plugins: { tooltip: { callbacks: { label: ctx => {
+      const p = ctx.raw;
+      return p.month ? `${p.month}: ${p.x.toLocaleString('es-AR')} visitas, ${p.y} acc.` : '';
+    }}}}
+  }
+});
+</script>
+</body></html>
