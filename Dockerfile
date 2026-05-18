@@ -4,6 +4,7 @@ COPY mapa_calor.html /usr/share/nginx/html/mapa_calor.html
 COPY visitas_vs_accidentes.html /usr/share/nginx/html/visitas_vs_accidentes.html
 COPY all_entries.json /usr/share/nginx/html/all_entries.json
 COPY provincias.geojson /usr/share/nginx/html/provincias.geojson
+COPY area_protegida_enriched.geojson /usr/share/nginx/html/area_protegida_enriched.geojson
 COPY parques_misiones.csv /usr/share/nginx/html/parques_misiones.csv
 COPY README.md /usr/share/nginx/html/README.md
 
