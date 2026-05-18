@@ -1,9 +1,11 @@
 import json, os, sys
 
-BASE = r"C:\Users\maxx\Downloads\Nueva carpeta"
-ENTRIES = os.path.join(BASE, "all_entries.json")
-PROV    = os.path.join(BASE, "provincias.geojson")
-OUT     = os.path.join(BASE, "mapa_calor.html")
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+DATA = os.path.join(ROOT, "data")
+ENTRIES = os.path.join(DATA, "all_entries.json")
+PROV    = os.path.join(DATA, "provincias.geojson")
+OUT     = os.path.join(ROOT, "mapa_calor.html")
 
 SPECIES_KEY = "c8e2f576c4d244cd9b3dad90400cb988_596e95c4d2fdb_5d1ebce132736"
 

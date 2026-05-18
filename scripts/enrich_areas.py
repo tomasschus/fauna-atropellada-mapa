@@ -3,7 +3,9 @@ Writes area_protegida_enriched.geojson with extra props csv_name and visits_tota
 """
 import json, csv, os, unicodedata, re
 
-BASE = r"C:\Users\maxx\Downloads\Nueva carpeta"
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+BASE = os.path.join(ROOT, "data")
 SRC  = os.path.join(BASE, "area_protegida.geojson")
 OUT  = os.path.join(BASE, "area_protegida_enriched.geojson")
 
@@ -75,6 +77,20 @@ for feat in g["features"]:
         p.pop(k, None)
 
 print(f"features: {len(g['features'])}, matched to CSVs: {matched}")
-with open(OUT, "w", encoding="utf-8") as f:
-    json.dump(g, f, ensure_ascii=False, separators=(",", ":"))
-print(f"wrote {OUT} ({os.path.getsize(OUT)} bytes)")
+
+# Keep only matched features + slim props + round coords to 5 decimals (~1 m)
+def simp(c):
+    if isinstance(c[0], (int, float)):
+        return [round(c[0], 5), round(c[1], 5)]
+    return [simp(x) for x in c]
+kept = []
+for f in g["features"]:
+    if "csv_name" not in f["properties"]: continue
+    f["geometry"]["coordinates"] = simp(f["geometry"]["coordinates"])
+    p = f["properties"]
+    f["properties"] = {k: p[k] for k in ("display_name","fna","nam","csv_name","visits_total","fdc") if k in p}
+    kept.append(f)
+g = {"type":"FeatureCollection","features": kept}
+with open(OUT, "w", encoding="utf-8") as fh:
+    json.dump(g, fh, ensure_ascii=False, separators=(",", ":"))
+print(f"wrote {OUT} ({os.path.getsize(OUT)} bytes, {len(kept)} features)")

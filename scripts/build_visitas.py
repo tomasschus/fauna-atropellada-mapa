@@ -4,11 +4,13 @@ in Misiones (from all_entries.json) and emit visitas_vs_accidentes.html.
 import json, csv, os, math
 from collections import defaultdict
 
-BASE = r"C:\Users\maxx\Downloads\Nueva carpeta"
-ENTRIES = os.path.join(BASE, "all_entries.json")
-PROV    = os.path.join(BASE, "provincias.geojson")
-VISITS  = os.path.join(BASE, "parques_misiones.csv")
-OUT     = os.path.join(BASE, "visitas_vs_accidentes.html")
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+DATA = os.path.join(ROOT, "data")
+ENTRIES = os.path.join(DATA, "all_entries.json")
+PROV    = os.path.join(DATA, "provincias.geojson")
+VISITS  = os.path.join(DATA, "parques_misiones.csv")
+OUT     = os.path.join(ROOT, "visitas_vs_accidentes.html")
 
 SPECIES_KEY = "c8e2f576c4d244cd9b3dad90400cb988_596e95c4d2fdb_5d1ebce132736"
 
