@@ -89,10 +89,62 @@ print(f"unique species: {len(species_counts)} (top 5: {sorted(species_counts.ite
 prov_names = sorted({t[2] for t in tagged if t[2]})
 species_names = sorted(species_counts.keys(), key=lambda s: (-species_counts[s], s.lower()))
 
-# 4) Write HTML
+# 4) Load park polygons + total visits per park
+import csv as _csv
+parks_path = os.path.join(BASE, "parques.geojson")
+parques = json.load(open(parks_path, encoding="utf-8"))
+
+visits_total = {}    # label -> int
+visits_files = [
+    ("parques_misiones.csv",  "area_protegida"),
+    ("gran_parque_ibera.csv", "area_protegida"),
+    ("parques_chubut.csv",    "area_protegida"),
+    ("parque_ischigualasto.csv", None),  # name implicit
+]
+for fname, col in visits_files:
+    path = os.path.join(BASE, fname)
+    if not os.path.exists(path): continue
+    with open(path, encoding="utf-8") as fh:
+        r = _csv.DictReader(fh)
+        for row in r:
+            v = row.get("visitas", "")
+            if v in ("", "NA", None): continue
+            try: n = int(v)
+            except ValueError: continue
+            name = (row.get(col) if col else "Ischigualasto") or ""
+            name = name.strip()
+            if not name: continue
+            visits_total[name] = visits_total.get(name, 0) + n
+
+# Match each park feature label to a CSV name (loose contains)
+import unicodedata as _u
+def norm(s):
+    s = _u.normalize("NFD", s or ""); s = "".join(c for c in s if _u.category(c)!="Mn")
+    return s.lower().strip()
+# Strip generic prefixes to get distinctive tokens
+STOP = {"parque","provincial","nacional","reserva","natural","area","gran","de","del","la","el","los","las","temático","tematico","espectaculo","y"}
+def tokens(s):
+    return [t for t in norm(s).split() if len(t) > 3 and t not in STOP]
+csv_keys = [(orig, set(tokens(orig))) for orig in visits_total]
+for feat in parques["features"]:
+    label = feat["properties"].get("match") or feat["properties"].get("name") or ""
+    lab_toks = set(tokens(label))
+    matched_csv = None
+    best = 0
+    for orig, toks in csv_keys:
+        if not toks: continue
+        common = len(lab_toks & toks)
+        if common > best:
+            best = common; matched_csv = orig
+    feat["properties"]["csv_name"]  = matched_csv
+    feat["properties"]["visits_total"] = visits_total.get(matched_csv, 0) if matched_csv else 0
+print("park visits:", {f["properties"].get("csv_name"): f["properties"]["visits_total"] for f in parques["features"]})
+
+# 5) Write HTML
 points_json   = json.dumps(tagged, ensure_ascii=False, separators=(",", ":"))
 provs_json    = json.dumps(prov_names, ensure_ascii=False)
 species_json  = json.dumps([[s, species_counts[s]] for s in species_names], ensure_ascii=False)
+parques_json  = json.dumps(parques, ensure_ascii=False, separators=(",", ":"))
 
 html = """<!DOCTYPE html>
 <html lang="es">
@@ -129,6 +181,9 @@ html = """<!DOCTYPE html>
   <label for="sp">Especie (escribí para buscar)</label>
   <input list="sp_list" id="sp" placeholder="Todas las especies" autocomplete="off">
   <datalist id="sp_list">__SP_OPTIONS__</datalist>
+  <label style="display:flex;align-items:center;gap:6px;margin-top:10px">
+    <input type="checkbox" id="parks" style="width:auto"> Mostrar áreas protegidas
+  </label>
   <button id="clear">Limpiar filtros</button>
   <div id="stats"></div>
 </div>
@@ -137,6 +192,7 @@ html = """<!DOCTYPE html>
 <script>
 const POINTS  = __POINTS__;   // [lat, lng, province, species]
 const SPECIES = __SPECIES__;  // [[name, count], ...]
+const PARQUES = __PARQUES__;  // FeatureCollection of protected areas
 const SP_SET  = new Set(SPECIES.map(s => s[0].toLowerCase()));
 
 const map = L.map('map', { preferCanvas:true }).setView([-38.5, -63.5], 5);
@@ -185,7 +241,29 @@ document.getElementById('sp').addEventListener('input', () => {
 document.getElementById('clear').addEventListener('click', () => {
   document.getElementById('prov').value = '__all__';
   document.getElementById('sp').value = '';
+  document.getElementById('parks').checked = false;
+  parksLayer.remove();
   render();
+});
+
+const parksLayer = L.geoJSON(PARQUES, {
+  style: () => ({ color: '#2e7d32', weight: 2, fillColor: '#66bb6a', fillOpacity: 0.25 }),
+  onEachFeature: (feat, layer) => {
+    const p = feat.properties || {};
+    const visits = p.visits_total ? p.visits_total.toLocaleString('es-AR') : 'sin datos';
+    layer.bindPopup(`<b>${p.name || p.match || 'Área protegida'}</b><br>
+      ${p.csv_name ? 'CSV: ' + p.csv_name + '<br>' : ''}
+      Visitas (acum.): ${visits}<br>
+      <span style="color:#888">${p.boundary || ''}${p.protect_class ? ' · clase '+p.protect_class : ''}</span>`);
+  }
+});
+document.getElementById('parks').addEventListener('change', e => {
+  if (e.target.checked) {
+    parksLayer.addTo(map);
+    map.fitBounds(parksLayer.getBounds(), { padding:[40,40] });
+  } else {
+    parksLayer.remove();
+  }
 });
 render();
 </script>
@@ -206,7 +284,8 @@ html = (html
         .replace("__PROV_OPTIONS__", prov_options)
         .replace("__SP_OPTIONS__", sp_options)
         .replace("__POINTS__", points_json)
-        .replace("__SPECIES__", species_json))
+        .replace("__SPECIES__", species_json)
+        .replace("__PARQUES__", parques_json))
 
 open(OUT, "w", encoding="utf-8").write(html)
 print(f"wrote {OUT} ({os.path.getsize(OUT)} bytes)")
