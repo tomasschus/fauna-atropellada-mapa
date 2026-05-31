@@ -27,7 +27,8 @@
     position:absolute; left:12px; top:50%; transform:translateY(-50%);
     font-size:15px; pointer-events:none; line-height:1;
   }
-  .input-wrap input { padding-left:36px; }
+  .form-group .input-wrap input { padding-left:38px !important; }
+  .form-group .input-wrap input[type="password"] { padding-right:40px !important; }
   .input-wrap .toggle-pass {
     position:absolute; right:12px; top:50%; transform:translateY(-50%);
     background:none; border:none; cursor:pointer; font-size:15px;
@@ -208,18 +209,17 @@
         <div class="form-group">
           <label>Correo electrónico</label>
           <div class="input-wrap">
-          <span class="input-icon">✉️</span>
-          <input type="email" id="inp-email" value="usuario@test.com" autocomplete="off" readonly style="background:#f5f5f5;color:#888">
-        </div>
-          <div class="error-msg" id="err-login">Usuario o contraseña incorrectos.</div>
+            <span class="input-icon">✉️</span>
+            <input type="email" id="inp-email" value="usuario@test.com" autocomplete="off" readonly style="background:#f5f5f5;color:#555">
+          </div>
         </div>
         <div class="form-group">
           <label>Contraseña</label>
           <div class="input-wrap">
-          <span class="input-icon">🔒</span>
-          <input type="password" id="inp-pass" value="12345678" readonly style="background:#f5f5f5;color:#888" id-pass>
-          <button class="toggle-pass" type="button" onclick="togglePass(this)" tabindex="-1">👁</button>
-        </div>
+            <span class="input-icon">🔒</span>
+            <input type="password" id="inp-pass" value="12345678" readonly style="background:#f5f5f5;color:#555">
+            <button class="toggle-pass" type="button" onclick="togglePass(this)" tabindex="-1">👁</button>
+          </div>
         </div>
         <div class="modal-actions">
           <button class="btn-next" onclick="loginStep()">Ingresar</button>
@@ -574,8 +574,7 @@ function setAutoFields() {
 }
 function cerrarModal() {
   document.getElementById('modal-overlay').classList.remove('open');
-  document.getElementById('inp-email').value = '';
-  document.getElementById('inp-pass').value  = '';
+  document.getElementById('inp-pass').type = 'password';
   document.getElementById('err-login').classList.remove('show');
   document.getElementById('photo-circle').innerHTML = '<span class="ph-icon">📷</span><span class="ph-text">Tocá para subir</span>';
 }
