@@ -55,8 +55,10 @@
 
   /* ── SLIDE 1 PORTADA ── */
   #s1 { background: linear-gradient(145deg, var(--verde-1) 0%, var(--verde-2) 55%, #1f6640 100%); justify-content: center; align-items: center; text-align: center; }
+  #s1 .bg-photo { position: absolute; inset: 0; background: url('img/ftnEmnJ4erHctPO-oHVy2.jpg') center/cover no-repeat; opacity: .22; }
+  #s1 .bg-overlay { position: absolute; inset: 0; background: linear-gradient(145deg, rgba(10,46,24,.85) 0%, rgba(26,74,46,.75) 60%, rgba(10,46,24,.9) 100%); }
   #s1 .leaf-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-  #s1 .leaf-bg svg { opacity: .06; width: 100%; height: 100%; }
+  #s1 .leaf-bg svg { opacity: .04; width: 100%; height: 100%; }
   .portada-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 40px; }
   .portada-tag { font-size: 12px; letter-spacing: .15em; text-transform: uppercase; color: var(--verde-4); font-weight: 700; background: rgba(76,175,125,.15); border: 1px solid rgba(76,175,125,.3); border-radius: 20px; padding: 6px 20px; }
   .logo-badge { width: 84px; height: 84px; border-radius: 50%; background: var(--verde-3); border: 3px solid var(--verde-4); display: flex; align-items: center; justify-content: center; font-size: 38px; box-shadow: 0 0 48px rgba(76,175,125,.3); }
@@ -69,7 +71,9 @@
 
   /* ── SLIDE 2 PROBLEMA ── */
   #s2 { background: var(--gris); }
-  #s2 .sidebar { background: var(--verde-2); }
+  #s2 .sidebar { background: var(--verde-2); position: relative; overflow: hidden; }
+  #s2 .sidebar .sb-photo { position: absolute; inset: 0; background: url('img/ftnEmnJ4erHctPO-oHVy2.jpg') center/cover no-repeat; opacity: .18; }
+  #s2 .sidebar .sb-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(26,74,46,.92), rgba(10,46,24,.95)); }
   .prob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .prob-card { background: var(--blanco); border-radius: 14px; padding: 22px; box-shadow: 0 2px 12px rgba(0,0,0,.07); border-top: 3px solid var(--verde-3); }
   .prob-card .icon { font-size: 32px; margin-bottom: 10px; }
@@ -111,12 +115,11 @@
   #s5 h2 { font-size: 34px; font-weight: 900; color: var(--blanco); margin-bottom: 6px; }
   #s5 .slide-desc { font-size: 16px; color: rgba(255,255,255,.58); margin-bottom: 28px; }
   .flow-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; position: relative; }
-  .flow-step { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.13); border-radius: 14px; padding: 24px 18px; position: relative; }
-  .flow-step::after { content: '→'; position: absolute; right: -20px; top: 50%; transform: translateY(-50%); color: var(--verde-4); font-size: 20px; font-weight: 700; z-index: 2; }
-  .flow-step:last-child::after { display: none; }
-  .step-num { width: 30px; height: 30px; border-radius: 50%; background: var(--verde-3); color: var(--blanco); font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
-  .flow-step .step-icon { font-size: 32px; margin-bottom: 10px; }
-  .flow-step h4 { font-size: 14px; font-weight: 800; color: var(--verde-4); margin-bottom: 8px; }
+  .flow-step { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.13); border-radius: 14px; padding: 16px 18px; position: relative; display:flex; gap:14px; align-items:flex-start; }
+  .flow-step::after { display: none; }
+  .step-num { width: 30px; height: 30px; border-radius: 50%; background: var(--verde-3); color: var(--blanco); font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink:0; }
+  .flow-step .step-icon { font-size: 26px; flex-shrink:0; margin-top:2px; }
+  .flow-step h4 { font-size: 14px; font-weight: 800; color: var(--verde-4); margin-bottom: 4px; }
   .flow-step p  { font-size: 13px; color: rgba(255,255,255,.7); line-height: 1.5; }
   .objetivo-box { margin-top: 22px; background: rgba(76,175,125,.12); border: 1px solid rgba(76,175,125,.3); border-radius: 12px; padding: 16px 22px; display: flex; align-items: center; gap: 16px; }
   .objetivo-box .ob-icon { font-size: 30px; flex-shrink: 0; }
@@ -154,7 +157,9 @@
   .riesgo-card p  { font-size: 13px; color: rgba(255,255,255,.65); line-height: 1.45; }
 
   /* ── SLIDE 8 CONCLUSIÓN ── */
-  #s8 { background: linear-gradient(145deg, var(--verde-2) 0%, var(--verde-1) 100%); justify-content: center; align-items: center; text-align: center; }
+  #s8 { background: var(--verde-1); justify-content: center; align-items: center; text-align: center; }
+  #s8 .bg-photo { position: absolute; inset: 0; background: url('img/RJjvOg4KsmQoHEeupkUAj.jpg') center/cover no-repeat; opacity: .28; }
+  #s8 .bg-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,46,24,.82), rgba(10,46,24,.9)); }
   .conclusion-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 28px; padding: 52px; max-width: 860px; }
   .conclusion-inner .c-icon { font-size: 52px; }
   .conclusion-inner h2 { font-size: clamp(28px, 4vw, 46px); font-weight: 900; color: var(--blanco); line-height: 1.15; }
@@ -184,6 +189,8 @@
 
   <!-- ══════ 1 PORTADA ══════ -->
   <div class="slide active" id="s1">
+    <div class="bg-photo"></div>
+    <div class="bg-overlay"></div>
     <div class="leaf-bg">
       <svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
         <path d="M-50 350 Q200 100 500 350 Q800 600 1100 350" stroke="white" stroke-width="2" fill="none"/>
@@ -210,8 +217,10 @@
   <div class="slide content-slide" id="s2">
     <div class="slide-num-badge" style="color:rgba(255,255,255,.45)">01 · Problema</div>
     <div class="sidebar" style="background:var(--verde-2)">
-      <h2>Las rutas son barreras mortales para la <span>fauna</span></h2>
-      <p>La planificación vial raramente contempla el impacto ecológico. Los registros de atropellamientos están <strong style="color:#fff">dispersos y sin acceso dinámico</strong> para tomar decisiones.</p>
+      <div class="sb-photo"></div>
+      <div class="sb-overlay"></div>
+      <h2 style="position:relative;z-index:1">Las rutas son barreras mortales para la <span>fauna</span></h2>
+      <p style="position:relative;z-index:1">La planificación vial raramente contempla el impacto ecológico. Los registros de atropellamientos están <strong style="color:#fff">dispersos y sin acceso dinámico</strong> para tomar decisiones.</p>
     </div>
     <div class="main-area">
       <div class="prob-grid">
@@ -339,8 +348,10 @@
     <div style="padding:52px 64px;flex:1;display:flex;flex-direction:column;justify-content:center">
       <div class="slide-label">La propuesta</div>
       <h2 style="font-size:34px;font-weight:900;color:var(--blanco);margin-bottom:8px">EcoRuta Interactiva — ¿Cómo funciona?</h2>
-      <p class="slide-desc">PWA sin descarga ni registro. Funciona con baja conectividad.</p>
-      <div class="flow-steps">
+      <div style="display:flex;gap:32px;align-items:flex-start;margin-bottom:0">
+        <div style="flex:1;display:flex;flex-direction:column">
+          <p class="slide-desc" style="margin-bottom:20px">PWA sin descarga ni registro. Funciona con baja conectividad.</p>
+          <div class="flow-steps" style="display:flex;flex-direction:column;gap:10px">
         <div class="flow-step">
           <div class="step-num">1</div>
           <div class="step-icon">📸</div>
@@ -365,10 +376,14 @@
           <h4>Panel vial</h4>
           <p>Municipios y vialidades ven mapas predictivos y gestionan obras de mitigación.</p>
         </div>
-      </div>
-      <div class="objetivo-box">
-        <div class="ob-icon">🎯</div>
-        <p>Meta: en <strong>18 meses</strong>, al menos <strong>2 municipios</strong> instalan infraestructura y reducen atropellamientos un <strong>25 %</strong>.</p>
+          <div class="objetivo-box" style="margin-top:16px">
+            <div class="ob-icon">🎯</div>
+            <p>Meta: en <strong>18 meses</strong>, al menos <strong>2 municipios</strong> instalan infraestructura y reducen atropellamientos un <strong>25 %</strong>.</p>
+          </div>
+        </div>
+        <div style="width:260px;flex-shrink:0;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.4)">
+          <img src="img/a1BL-KmH9FX9hsPZiV5Rk.jpg" alt="Mapa de trayectorias de fauna" style="width:100%;height:100%;object-fit:cover;display:block">
+        </div>
       </div>
     </div>
   </div>
@@ -491,9 +506,11 @@
   </div>
 
   <!-- ══════ 8 CONCLUSIÓN ══════ -->
-  <div class="slide" id="s8" style="background:linear-gradient(145deg,var(--verde-2) 0%,var(--verde-1) 100%);justify-content:center;align-items:center;text-align:center">
-    <div class="slide-num-badge" style="color:rgba(255,255,255,.35)">07 · Conclusión</div>
-    <div class="conclusion-inner">
+  <div class="slide" id="s8" style="justify-content:center;align-items:center;text-align:center">
+    <div class="bg-photo"></div>
+    <div class="bg-overlay"></div>
+    <div class="slide-num-badge" style="color:rgba(255,255,255,.35);z-index:1">07 · Conclusión</div>
+    <div class="conclusion-inner" style="position:relative;z-index:1">
       <div class="c-icon">🌿</div>
       <h2 style="font-size:clamp(28px,4vw,46px);font-weight:900;color:var(--blanco);line-height:1.15">
         Tecnología al servicio<br>de la <span style="color:var(--verde-4)">biodiversidad</span>
