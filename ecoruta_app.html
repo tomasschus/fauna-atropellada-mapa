@@ -20,6 +20,20 @@
   #clear { margin-top:8px; width:100%; padding:6px; font-size:12px; cursor:pointer; }
   .badge { display:inline-block; padding:2px 6px; border-radius:4px; background:#eee; }
 
+
+  /* ── INPUT CON ÍCONO ── */
+  .input-wrap { position:relative; }
+  .input-wrap .input-icon {
+    position:absolute; left:12px; top:50%; transform:translateY(-50%);
+    font-size:15px; pointer-events:none; line-height:1;
+  }
+  .input-wrap input { padding-left:36px; }
+  .input-wrap .toggle-pass {
+    position:absolute; right:12px; top:50%; transform:translateY(-50%);
+    background:none; border:none; cursor:pointer; font-size:15px;
+    color:#aaa; padding:0; line-height:1;
+  }
+  .input-wrap .toggle-pass:hover { color:#555; }
   /* ── TOPBAR ── */
   #topbar {
     position:fixed; top:0; left:0; right:0; height:56px; z-index:2000;
@@ -120,7 +134,7 @@
   #photo-input { display:none; }
 
   /* Step 3 - Formulario */
-  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; } .form-row .form-group { min-width:0; }
   .form-group select, .form-group textarea {
     width:100%; padding:10px 14px; border:1.5px solid #ddd; border-radius:8px;
     font-size:14px; outline:none; transition:border-color .2s; background:#fff;
@@ -193,12 +207,19 @@
       <div class="step-panel active" id="sp-1">
         <div class="form-group">
           <label>Correo electrónico</label>
+          <div class="input-wrap">
+          <span class="input-icon">✉️</span>
           <input type="email" id="inp-email" value="usuario@test.com" autocomplete="off" readonly style="background:#f5f5f5;color:#888">
+        </div>
           <div class="error-msg" id="err-login">Usuario o contraseña incorrectos.</div>
         </div>
         <div class="form-group">
           <label>Contraseña</label>
-          <input type="password" id="inp-pass" value="12345678" readonly style="background:#f5f5f5;color:#888">
+          <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="inp-pass" value="12345678" readonly style="background:#f5f5f5;color:#888" id-pass>
+          <button class="toggle-pass" type="button" onclick="togglePass(this)" tabindex="-1">👁</button>
+        </div>
         </div>
         <div class="modal-actions">
           <button class="btn-next" onclick="loginStep()">Ingresar</button>
@@ -568,8 +589,9 @@ function goStep(n) {
       if (i < n) d.classList.add('done');
       if (i === n) d.classList.add('active');
     }
-    document.getElementById('modal-title').textContent =
-      ['', 'Paso 1 · Ingresar', 'Paso 2 · Subir foto', 'Paso 3 · Completar datos'][n];
+    document.getElementById('modal-title').innerHTML =
+      ['', '🔐&nbsp; Paso 1 · Ingresar', '📷&nbsp; Paso 2 · Subir foto', '📋&nbsp; Paso 3 · Completar datos', ''][n] ||
+      '✅&nbsp; ¡Registro enviado!';
   } else {
     document.getElementById('sp-success').classList.add('active');
     document.querySelectorAll('.step-dot').forEach(d => d.classList.add('done'));
@@ -588,6 +610,12 @@ function previewPhoto(input) {
     circle.innerHTML = '<img src="' + e.target.result + '" alt="foto">';
   };
   reader.readAsDataURL(file);
+}
+function togglePass(btn) {
+  const inp = btn.parentElement.querySelector('input');
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.textContent = show ? '🙈' : '👁';
 }
 function enviarReporte() {
   goStep(4);
