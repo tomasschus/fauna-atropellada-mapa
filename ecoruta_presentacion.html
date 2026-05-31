@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EcoRuta Interactiva — Presentación</title>
+<style>
+  :root {
+    --verde-1: #0a2e18;
+    --verde-2: #1a4a2e;
+    --verde-3: #2d7a4f;
+    --verde-4: #4caf7d;
+    --verde-5: #a8d5b5;
+    --verde-6: #e4f4ea;
+    --blanco:  #ffffff;
+    --gris:    #f0f7f2;
+    --texto:   #0d1f14;
+    --oro:     #d4a832;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--verde-1);
+  }
+
+  /* ─── SLIDES ─── */
+  .deck {
+    width: 100%; height: 100%;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .45s ease, transform .45s ease;
+    transform: translateX(40px);
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(0);
+  }
+  .slide.out-left {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+
+  /* ─── LAYOUT HELPERS ─── */
+  .full-center {
+    justify-content: center; align-items: center; text-align: center;
+  }
+  .content-slide {
+    flex-direction: row;
+  }
+  .sidebar {
+    width: 38%;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 48px 40px;
+  }
+  .main-area {
+    flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 40px 48px 40px 32px;
+    overflow-y: auto;
+  }
+
+  /* ─── SLIDE 1 — PORTADA ─── */
+  #s1 {
+    background: linear-gradient(145deg, var(--verde-1) 0%, var(--verde-2) 55%, #1f6640 100%);
+  }
+  #s1 .leaf-bg {
+    position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+  }
+  #s1 .leaf-bg svg { opacity: .07; width: 100%; height: 100%; }
+  .portada-inner {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 20px; padding: 40px;
+  }
+  .logo-badge {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--verde-3);
+    border: 3px solid var(--verde-4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    box-shadow: 0 0 40px rgba(76,175,125,.3);
+  }
+  .portada-tag {
+    font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
+    color: var(--verde-4); font-weight: 600;
+    background: rgba(76,175,125,.15);
+    border: 1px solid rgba(76,175,125,.3);
+    border-radius: 20px; padding: 5px 18px;
+  }
+  .portada-title {
+    font-size: clamp(36px, 6vw, 68px);
+    font-weight: 900; color: var(--blanco);
+    letter-spacing: -.03em; line-height: 1.0;
+    text-align: center;
+  }
+  .portada-title span { color: var(--verde-4); }
+  .portada-sub {
+    font-size: clamp(14px, 1.8vw, 20px);
+    color: rgba(255,255,255,.7);
+    max-width: 640px; line-height: 1.5; text-align: center;
+  }
+  .portada-meta {
+    display: flex; gap: 32px; margin-top: 8px;
+  }
+  .portada-meta div {
+    text-align: center;
+  }
+  .portada-meta .n {
+    font-size: 26px; font-weight: 800; color: var(--verde-4);
+  }
+  .portada-meta .l {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .07em;
+    color: rgba(255,255,255,.5);
+  }
+  .portada-authors {
+    font-size: 13px; color: rgba(255,255,255,.45);
+    margin-top: 4px;
+  }
+
+  /* ─── SLIDE 2 — PROBLEMA ─── */
+  #s2 { background: var(--gris); }
+  #s2 .sidebar {
+    background: var(--verde-2);
+  }
+  #s2 .sidebar h2 {
+    font-size: 32px; font-weight: 900; color: var(--blanco);
+    line-height: 1.15; margin-bottom: 14px;
+  }
+  #s2 .sidebar h2 span { color: var(--verde-4); }
+  #s2 .sidebar p {
+    font-size: 14px; color: rgba(255,255,255,.7); line-height: 1.6;
+  }
+
+  .problema-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .prob-card {
+    background: var(--blanco);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.07);
+    border-top: 3px solid var(--verde-3);
+  }
+  .prob-card .icon { font-size: 28px; margin-bottom: 8px; }
+  .prob-card h4 { font-size: 14px; font-weight: 700; color: var(--verde-2); margin-bottom: 6px; }
+  .prob-card p  { font-size: 12.5px; color: #555; line-height: 1.5; }
+  .stat-pill {
+    display: inline-block;
+    background: var(--verde-6);
+    color: var(--verde-2);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 11px; font-weight: 700;
+    margin-top: 8px;
+  }
+
+  /* ─── SLIDE 3 — IMPACTOS ─── */
+  #s3 {
+    background: linear-gradient(160deg, var(--verde-2) 0%, var(--verde-1) 100%);
+    justify-content: center; padding: 48px 56px;
+  }
+  #s3 h2 {
+    font-size: 30px; font-weight: 900; color: var(--blanco);
+    margin-bottom: 6px;
+  }
+  #s3 .slide-sub {
+    font-size: 14px; color: var(--verde-4); margin-bottom: 28px;
+    font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
+  }
+  .impacto-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    margin-bottom: 20px;
+  }
+  .impacto-card {
+    border-radius: 14px;
+    padding: 22px 20px;
+    position: relative; overflow: hidden;
+  }
+  .impacto-card::before {
+    content: '';
+    position: absolute; top: -30px; right: -30px;
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(255,255,255,.06);
+  }
+  .impacto-card.ambiental { background: rgba(45,122,79,.4); border: 1px solid rgba(76,175,125,.3); }
+  .impacto-card.social    { background: rgba(212,168,50,.15); border: 1px solid rgba(212,168,50,.3); }
+  .impacto-card.economico { background: rgba(220,53,69,.12); border: 1px solid rgba(220,53,69,.25); }
+  .impacto-card .ic-icon  { font-size: 30px; margin-bottom: 10px; }
+  .impacto-card h4 { font-size: 13px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .07em; margin-bottom: 10px; }
+  .impacto-card.ambiental h4 { color: var(--verde-4); }
+  .impacto-card.social    h4 { color: #f0c040; }
+  .impacto-card.economico h4 { color: #f08080; }
+  .impacto-card ul { padding-left: 16px; }
+  .impacto-card ul li { font-size: 12.5px; color: rgba(255,255,255,.82); margin-bottom: 5px; line-height: 1.4; }
+
+  .causas-row {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .causa-tag {
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.2);
+    color: rgba(255,255,255,.8);
+    border-radius: 20px; padding: 5px 14px;
+    font-size: 12px;
+  }
+
+  /* ─── SLIDE 4 — POR QUÉ TI ─── */
+  #s4 { background: var(--gris); }
+  #s4 .sidebar { background: var(--verde-3); }
+  #s4 .sidebar h2 { font-size: 28px; font-weight: 900; color: var(--blanco); line-height: 1.2; margin-bottom: 12px; }
+  #s4 .sidebar p  { font-size: 13.5px; color: rgba(255,255,255,.75); line-height: 1.6; }
+
+  .razon-list { display: flex; flex-direction: column; gap: 14px; }
+  .razon-item {
+    background: var(--blanco);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex; align-items: flex-start; gap: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.07);
+  }
+  .razon-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--verde-3); color: var(--blanco);
+    font-size: 15px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .razon-item h4 { font-size: 14px; font-weight: 700; color: var(--verde-2); margin-bottom: 4px; }
+  .razon-item p  { font-size: 12.5px; color: #555; line-height: 1.5; }
+
+  /* ─── SLIDE 5 — SOLUCIÓN ─── */
+  #s5 {
+    background: linear-gradient(145deg, var(--verde-1) 0%, #0d2e1a 100%);
+    padding: 48px 56px;
+    justify-content: center;
+  }
+  #s5 .slide-label { font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
+    color: var(--verde-4); font-weight: 700; margin-bottom: 8px; }
+  #s5 h2 { font-size: 30px; font-weight: 900; color: var(--blanco); margin-bottom: 4px; }
+  #s5 .slide-desc { font-size: 14px; color: rgba(255,255,255,.6); margin-bottom: 28px; max-width: 700px; }
+
+  .flow-steps {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    position: relative;
+  }
+  .flow-step {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 14px;
+    padding: 22px 18px;
+    position: relative;
+  }
+  .flow-step::after {
+    content: '→';
+    position: absolute; right: -18px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--verde-4); font-size: 18px; font-weight: 700;
+    z-index: 2;
+  }
+  .flow-step:last-child::after { display: none; }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--verde-3); color: var(--blanco);
+    font-size: 12px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 10px;
+  }
+  .flow-step .step-icon { font-size: 28px; margin-bottom: 10px; }
+  .flow-step h4 { font-size: 13px; font-weight: 800; color: var(--verde-4); margin-bottom: 6px; }
+  .flow-step p  { font-size: 11.5px; color: rgba(255,255,255,.7); line-height: 1.5; }
+
+  .objetivo-box {
+    margin-top: 20px;
+    background: rgba(76,175,125,.12);
+    border: 1px solid rgba(76,175,125,.3);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .objetivo-box .ob-icon { font-size: 28px; flex-shrink: 0; }
+  .objetivo-box p { font-size: 13px; color: rgba(255,255,255,.8); line-height: 1.5; }
+  .objetivo-box strong { color: var(--verde-4); }
+
+  /* ─── SLIDE 6 — TECNOLOGÍA ─── */
+  #s6 { background: var(--gris); }
+  #s6 .sidebar { background: var(--verde-2); }
+  #s6 .sidebar h2 { font-size: 28px; font-weight: 900; color: var(--blanco); line-height: 1.2; margin-bottom: 12px; }
+  #s6 .sidebar p  { font-size: 13px; color: rgba(255,255,255,.7); line-height: 1.6; }
+  #s6 .sidebar .arch-tag {
+    margin-top: 16px;
+    background: rgba(76,175,125,.2);
+    border: 1px solid var(--verde-4);
+    border-radius: 8px; padding: 12px 14px;
+    font-size: 12px; color: var(--verde-5); line-height: 1.6;
+  }
+
+  .tech-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .tech-card {
+    background: var(--blanco);
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.07);
+    border-left: 4px solid var(--verde-3);
+  }
+  .tech-card.ia  { border-left-color: var(--oro); }
+  .tech-card.db  { border-left-color: #5c8dd6; }
+  .tech-card h4  { font-size: 12px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--verde-3); margin-bottom: 8px; }
+  .tech-card.ia h4  { color: var(--oro); }
+  .tech-card.db h4  { color: #5c8dd6; }
+  .tech-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    background: var(--verde-6); color: var(--verde-2);
+    border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 600;
+  }
+  .chip.ia { background: #fef9e7; color: #8a6a00; }
+  .chip.db { background: #eaf0fc; color: #2c5fa3; }
+
+  /* ─── SLIDE 7 — PÚBLICO & IMPACTOS ─── */
+  #s7 {
+    background: linear-gradient(160deg, #0f3320 0%, var(--verde-2) 100%);
+    padding: 44px 56px;
+    justify-content: center;
+  }
+  #s7 h2 { font-size: 28px; font-weight: 900; color: var(--blanco); margin-bottom: 4px; }
+  #s7 .slide-sub { font-size: 13px; color: var(--verde-4); font-weight: 700;
+    text-transform: uppercase; letter-spacing: .08em; margin-bottom: 24px; }
+
+  .publico-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    margin-bottom: 18px;
+  }
+  .pub-card {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 12px; padding: 18px;
+  }
+  .pub-card .pub-icon { font-size: 26px; margin-bottom: 8px; }
+  .pub-card h4 { font-size: 13px; font-weight: 800; color: var(--verde-4); margin-bottom: 6px; }
+  .pub-card p  { font-size: 12px; color: rgba(255,255,255,.7); line-height: 1.5; }
+
+  .riesgo-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+  }
+  .riesgo-card {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .riesgo-card .ri-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .riesgo-card h5 { font-size: 12px; font-weight: 700; color: #f0c040; margin-bottom: 4px; }
+  .riesgo-card p  { font-size: 11px; color: rgba(255,255,255,.65); line-height: 1.4; }
+
+  /* ─── SLIDE 8 — CONCLUSIÓN ─── */
+  #s8 {
+    background: linear-gradient(145deg, var(--verde-2) 0%, var(--verde-1) 100%);
+  }
+  #s8 .sidebar {
+    background: rgba(0,0,0,.2);
+    border-right: 1px solid rgba(255,255,255,.08);
+  }
+  #s8 .sidebar h2 { font-size: 28px; font-weight: 900; color: var(--blanco); line-height: 1.2; margin-bottom: 14px; }
+  #s8 .sidebar p  { font-size: 13px; color: rgba(255,255,255,.7); line-height: 1.7; }
+  #s8 .sidebar .cta {
+    margin-top: 20px;
+    background: var(--verde-3);
+    border-radius: 10px; padding: 14px 16px;
+    font-size: 13px; color: var(--blanco); line-height: 1.5;
+  }
+  #s8 .sidebar .cta strong { color: var(--verde-4); }
+
+  .referencias {
+    padding: 40px 48px 40px 32px;
+    overflow-y: auto;
+  }
+  .referencias h3 {
+    font-size: 13px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--verde-4); margin-bottom: 16px;
+  }
+  .ref-item {
+    display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start;
+  }
+  .ref-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--verde-4); flex-shrink: 0; margin-top: 7px;
+  }
+  .ref-item p { font-size: 12px; color: rgba(255,255,255,.65); line-height: 1.6; }
+  .ref-item a { color: var(--verde-5); }
+
+  .viabilidad-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px;
+  }
+  .viab-card {
+    background: rgba(76,175,125,.12);
+    border: 1px solid rgba(76,175,125,.25);
+    border-radius: 10px; padding: 14px 16px;
+  }
+  .viab-card h4 { font-size: 12px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--verde-4); margin-bottom: 6px; }
+  .viab-card p { font-size: 12px; color: rgba(255,255,255,.7); line-height: 1.5; }
+
+  /* ─── NAVEGACIÓN ─── */
+  .nav-bar {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    z-index: 200;
+    display: flex; align-items: center; gap: 16px;
+    background: rgba(10,46,24,.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(76,175,125,.25);
+    border-radius: 40px;
+    padding: 10px 20px;
+  }
+  .nav-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--verde-3);
+    border: none; cursor: pointer;
+    color: var(--blanco); font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
+  }
+  .nav-btn:hover { background: var(--verde-4); }
+  .nav-btn:disabled { background: rgba(255,255,255,.1); cursor: default; }
+  .dots { display: flex; gap: 6px; }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(255,255,255,.25);
+    cursor: pointer; transition: background .2s, transform .2s;
+  }
+  .dot.active { background: var(--verde-4); transform: scale(1.3); }
+  .slide-counter {
+    font-size: 12px; color: rgba(255,255,255,.5);
+    min-width: 38px; text-align: center;
+  }
+
+  /* ─── SLIDE LABEL GLOBAL ─── */
+  .slide-num-badge {
+    position: absolute; top: 20px; left: 24px;
+    background: rgba(0,0,0,.25);
+    color: rgba(255,255,255,.5);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 11px; letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- ══════ SLIDE 1 — PORTADA ══════ -->
+  <div class="slide full-center active" id="s1">
+    <div class="leaf-bg">
+      <svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+        <path d="M-50 350 Q200 100 500 350 Q800 600 1100 350 Q1250 200 1400 350" stroke="white" stroke-width="2" fill="none"/>
+        <path d="M-50 500 Q300 250 600 500 Q900 750 1200 500" stroke="white" stroke-width="1.5" fill="none"/>
+        <circle cx="200" cy="150" r="120" fill="white"/>
+        <circle cx="1000" cy="550" r="90" fill="white"/>
+        <circle cx="900" cy="100" r="60" fill="white"/>
+        <path d="M100 700 Q400 400 700 600 Q1000 800 1300 500" stroke="white" stroke-width="2" fill="none"/>
+      </svg>
+    </div>
+    <div class="portada-inner">
+      <div class="portada-tag">Ciencia Ciudadana · Ecología Vial · Argentina</div>
+      <div class="logo-badge">🛣️</div>
+      <div class="portada-title"><span>EcoRuta</span> Interactiva</div>
+      <div class="portada-sub">Plataforma web geoespacial y colaborativa para el monitoreo y mitigación de atropellamientos de fauna nativa en Argentina.</div>
+      <div class="portada-meta">
+        <div><div class="n">10.153</div><div class="l">registros GPS</div></div>
+        <div><div class="n">+200</div><div class="l">especies</div></div>
+        <div><div class="n">23</div><div class="l">provincias</div></div>
+      </div>
+      <div class="portada-authors">Presentación · 2025</div>
+    </div>
+  </div>
+
+  <!-- ══════ SLIDE 2 — EL PROBLEMA ══════ -->
+  <div class="slide content-slide" id="s2">
+    <div class="slide-num-badge" style="color:rgba(255,255,255,.5)">01 · Problema</div>
+    <div class="sidebar">
+      <h2>Las rutas son<br><span>barreras mortales</span><br>para la fauna</h2>
+      <p>La planificación vial raramente contempla el impacto ecológico. Las carreteras fragmentan hábitats naturales y generan <strong style="color:#fff">millones de colisiones fatales</strong> al año.</p>
+      <p style="margin-top:12px">El mayor obstáculo: los registros están <strong style="color:#fff">dispersos, desactualizados o sin acceso dinámico</strong> para la toma de decisiones.</p>
+    </div>
+    <div class="main-area">
+      <h3 style="font-size:15px;font-weight:800;color:var(--verde-2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px">Problemáticas identificadas</h3>
+      <div class="problema-grid">
+        <div class="prob-card">
+          <div class="icon">🧩</div>
+          <h4>Fragmentación de hábitats</h4>
+          <p>El asfalto divide los corredores biológicos de especies amenazadas: yaguareté, aguará guazú, osos hormigueros y felinos autóctonos.</p>
+          <span class="stat-pill">Sin pasos de fauna</span>
+        </div>
+        <div class="prob-card">
+          <div class="icon">🚗</div>
+          <h4>Alta siniestralidad vial</h4>
+          <p>El flujo turístico estacional, el transporte de carga pesada y la falta de señalización reflectiva incrementan los incidentes nocturnos.</p>
+          <span class="stat-pill">7.229 en Misiones</span>
+        </div>
+        <div class="prob-card">
+          <div class="icon">📂</div>
+          <h4>Datos dispersos</h4>
+          <p>Los registros están centralizados en dependencias públicas sin acceso dinámico. No existe una plataforma unificada y actualizable.</p>
+          <span class="stat-pill">Desactualización crónica</span>
+        </div>
+        <div class="prob-card">
+          <div class="icon">🏛️</div>
+          <h4>Limitación estatal</h4>
+          <p>El Estado carece de recursos para desplegar patrullajes continuos en miles de kilómetros de rutas para recolectar datos estadísticos.</p>
+          <span class="stat-pill">Cobertura insuficiente</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ SLIDE 3 — IMPACTOS ══════ -->
+  <div class="slide" id="s3" style="flex-direction:column">
+    <div class="slide-num-badge">02 · Impactos</div>
+    <div style="padding:56px;flex:1;display:flex;flex-direction:column;justify-content:center">
+      <div class="slide-sub">Análisis de impactos</div>
+      <h2>Consecuencias en tres dimensiones</h2>
+      <div class="impacto-row" style="margin-top:20px">
+        <div class="impacto-card ambiental">
+          <div class="ic-icon">🌿</div>
+          <h4>Ambiental</h4>
+          <ul>
+            <li>Reducción drástica de poblaciones de especies clave para el equilibrio ecosistémico</li>
+            <li>Aislamiento genético de poblaciones remanentes por el efecto barrera</li>
+            <li>Pérdida de biodiversidad no reversible a corto plazo</li>
+          </ul>
+        </div>
+        <div class="impacto-card social">
+          <div class="ic-icon">👤</div>
+          <h4>Social</h4>
+          <ul>
+            <li>Riesgo severo para la seguridad vial humana</li>
+            <li>Colisiones con carpinchos y ciervos causan accidentes graves</li>
+            <li>Pérdida de valor turístico ecológico de las regiones afectadas</li>
+          </ul>
+        </div>
+        <div class="impacto-card economico">
+          <div class="ic-icon">💰</div>
+          <h4>Económico</h4>
+          <ul>
+            <li>Costos elevados por daños materiales en vehículos</li>
+            <li>Saturación de servicios de emergencia médica en rutas</li>
+            <li>Incremento en pólizas de seguros vehiculares</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:10px">Factores agravantes</p>
+        <div class="causas-row">
+          <span class="causa-tag">🌡️ Estacionalidad climática</span>
+          <span class="causa-tag">🚛 Transporte pesado</span>
+          <span class="causa-tag">⚡ Escasez de señalización dinámica</span>
+          <span class="causa-tag">🏎️ Incumplimiento de velocidad</span>
+          <span class="causa-tag">🌃 Circulación nocturna</span>
+          <span class="causa-tag">🔌 Ausencia de pasos de fauna</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ SLIDE 4 — POR QUÉ TECNOLOGÍA ══════ -->
+  <div class="slide content-slide" id="s4">
+    <div class="slide-num-badge" style="color:rgba(255,255,255,.5)">03 · Justificación</div>
+    <div class="sidebar">
+      <h2>¿Por qué una solución tecnológica?</h2>
+      <p>Las estrategias analógicas como la cartelería estática pierden efectividad a largo plazo por el fenómeno de <strong style="color:#fff">habituación</strong> de los conductores locales.</p>
+      <p style="margin-top:12px">Una plataforma digital aprovecha la infraestructura existente sin inversión estatal en hardware costoso.</p>
+    </div>
+    <div class="main-area">
+      <div class="razon-list">
+        <div class="razon-item">
+          <div class="razon-num">1</div>
+          <div>
+            <h4>Escalabilidad y eficiencia de costos</h4>
+            <p>Utiliza los teléfonos de los ciudadanos como sensores distribuidos en el territorio, eliminando la necesidad de inversión en hardware sensor costoso por parte del Estado.</p>
+          </div>
+        </div>
+        <div class="razon-item">
+          <div class="razon-num">2</div>
+          <div>
+            <h4>Fidelidad de datos geoespaciales</h4>
+            <p>La captura automatizada mediante metadatos EXIF mitiga el error humano en la declaración de coordenadas de los siniestros, garantizando precisión GPS.</p>
+          </div>
+        </div>
+        <div class="razon-item">
+          <div class="razon-num">3</div>
+          <div>
+            <h4>Visualización analítica para decisores</h4>
+            <p>Los mapas interactivos y matrices de calor permiten a los tomadores de decisiones interpretar la gravedad de la situación de forma inmediata, facilitando la asignación eficiente de recursos públicos.</p>
+          </div>
+        </div>
+        <div class="razon-item">
+          <div class="razon-num">4</div>
+          <div>
+            <h4>Predicción proactiva con Machine Learning</h4>
+            <p>El sistema cruza el historial de atropellamientos con estacionalidad climática y volumen de tráfico para predecir qué tramos presentan riesgo inminente en los días subsiguientes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ SLIDE 5 — LA SOLUCIÓN ══════ -->
+  <div class="slide" id="s5" style="flex-direction:column">
+    <div class="slide-num-badge">04 · Solución</div>
+    <div style="padding:56px;flex:1;display:flex;flex-direction:column;justify-content:center">
+      <div class="slide-label">La propuesta</div>
+      <h2>EcoRuta Interactiva — ¿Cómo funciona?</h2>
+      <p class="slide-desc">Plataforma PWA colaborativa con módulos de IA en el backend. Sin descarga, sin registro obligatorio. Optimizada para zonas con baja conectividad.</p>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-icon">📸</div>
+          <h4>Captura y Reporte</h4>
+          <p>El acompañante fotografía el ejemplar accidentado y lo carga en 3 pasos. Sin registro complejo. Almacenamiento diferido si hay baja señal.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-icon">🤖</div>
+          <h4>Extracción + IA</h4>
+          <p>El servidor extrae metadatos EXIF (GPS + timestamp). Un modelo de Visión por Computadora valida el entorno vial y clasifica el grupo taxonómico.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-icon">📊</div>
+          <h4>Predicción ML</h4>
+          <p>Algoritmos de clustering cruzan el historial con estacionalidad climática y tráfico para predecir "Zonas Negras" en los días siguientes.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">4</div>
+          <div class="step-icon">🏛️</div>
+          <h4>Panel de Intervención</h4>
+          <p>Municipios y vialidades acceden al panel para visualizar mapas predictivos, descargar reportes y gestionar órdenes de infraestructura.</p>
+        </div>
+      </div>
+      <div class="objetivo-box">
+        <div class="ob-icon">🎯</div>
+        <p>Objetivo medible: en <strong>18 meses</strong>, lograr que al menos <strong>2 municipios</strong> instalen infraestructura de mitigación, reduciendo atropellamientos un <strong>25 % en esos tramos</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ SLIDE 6 — TECNOLOGÍA ══════ -->
+  <div class="slide content-slide" id="s6">
+    <div class="slide-num-badge" style="color:rgba(255,255,255,.5)">05 · Tecnología</div>
+    <div class="sidebar">
+      <h2>Stack tecnológico</h2>
+      <p>100% software libre. Sin costos de licenciamiento. El principal costo operativo recurrente es el hosting en la nube, elegible para subsidios de innovación.</p>
+      <div class="arch-tag">
+        <strong>Arquitectura PWA</strong> (Progressive Web App) — funciona desde el navegador sin instalación, con soporte offline para carga diferida de reportes.
+      </div>
+    </div>
+    <div class="main-area">
+      <div class="tech-grid">
+        <div class="tech-card">
+          <h4>Frontend</h4>
+          <div class="tech-chips">
+            <span class="chip">HTML5 / CSS3</span>
+            <span class="chip">Tailwind CSS</span>
+            <span class="chip">JavaScript</span>
+            <span class="chip">Leaflet.js</span>
+            <span class="chip">OpenStreetMap</span>
+          </div>
+        </div>
+        <div class="tech-card">
+          <h4>Backend</h4>
+          <div class="tech-chips">
+            <span class="chip">Python</span>
+            <span class="chip">FastAPI</span>
+            <span class="chip">Async I/O</span>
+            <span class="chip">REST API</span>
+          </div>
+        </div>
+        <div class="tech-card ia">
+          <h4>IA &amp; Machine Learning</h4>
+          <div class="tech-chips">
+            <span class="chip ia">PyTorch / TF Lite</span>
+            <span class="chip ia">Visión Computacional</span>
+            <span class="chip ia">Scikit-Learn</span>
+            <span class="chip ia">Clustering</span>
+            <span class="chip ia">Transfer Learning</span>
+          </div>
+        </div>
+        <div class="tech-card db">
+          <h4>Base de Datos</h4>
+          <div class="tech-chips">
+            <span class="chip db">PostgreSQL</span>
+            <span class="chip db">PostGIS</span>
+            <span class="chip db">Datos geoespaciales</span>
+            <span class="chip db">Open Data</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px;background:#fff;border-radius:12px;padding:16px 20px;box-shadow:0 2px 10px rgba(0,0,0,.07)">
+        <h4 style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--verde-2);margin-bottom:10px">Sostenibilidad ambiental del sistema</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span class="chip">☀️ Cloud con energía renovable</span>
+          <span class="chip">🗜️ Compresión post-procesado</span>
+          <span class="chip">⚡ Transfer Learning (menor cómputo)</span>
+          <span class="chip">🔄 Política de ciclo de vida de datos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ SLIDE 7 — PÚBLICO & RIESGOS ══════ -->
+  <div class="slide" id="s7" style="flex-direction:column">
+    <div class="slide-num-badge">06 · Público y Riesgos</div>
+    <div style="padding:56px;flex:1;display:flex;flex-direction:column;justify-content:center">
+      <div class="slide-sub">Usuarios y análisis de riesgo</div>
+      <h2>¿Para quién y qué riesgos contemplamos?</h2>
+      <div class="publico-grid">
+        <div class="pub-card">
+          <div class="pub-icon">🚗</div>
+          <h4>Ciudadanos y viajeros</h4>
+          <p>Camioneros, turistas, guardaparques y ciclistas. Carga rápida del reporte sin autenticación compleja.</p>
+        </div>
+        <div class="pub-card">
+          <div class="pub-icon">🏛️</div>
+          <h4>Autoridades viales</h4>
+          <p>Vialidad Nacional/Provincial, Municipios. Panel técnico para auditar tramos, analizar predicciones e instalar infraestructura.</p>
+        </div>
+        <div class="pub-card">
+          <div class="pub-icon">🔬</div>
+          <h4>Científicos y ONGs</h4>
+          <p>Exportan estadísticas open data, desarrollan investigaciones de ecología vial y fundamentan demandas de protección.</p>
+        </div>
+      </div>
+      <p style="font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--verde-4);margin-bottom:12px">Riesgos identificados y estrategias de mitigación</p>
+      <div class="riesgo-grid">
+        <div class="riesgo-card">
+          <div class="ri-icon">⚠️</div>
+          <div>
+            <h5>Distracciones viales</h5>
+            <p>Interfaz con advertencias explícitas de seguridad. Almacenamiento diferido de la foto para subir al llegar a destino (preservando metadatos EXIF).</p>
+          </div>
+        </div>
+        <div class="riesgo-card">
+          <div class="ri-icon">🤖</div>
+          <div>
+            <h5>Errores del modelo de IA</h5>
+            <p>Validación humana aleatoria por expertos de ONGs y sistema de reportes de error para reentrenamiento continuo del modelo.</p>
+          </div>
+        </div>
+        <div class="riesgo-card">
+          <div class="ri-icon">🔒</div>
+          <div>
+            <h5>Privacidad de datos</h5>
+            <p>Algoritmo secundario de visión que detecta y aplica difuminado (blur) sobre rostros y patentes antes del almacenamiento definitivo.</p>
+          </div>
+        </div>
+        <div class="riesgo-card">
+          <div class="ri-icon">🌱</div>
+          <div>
+            <h5>Huella ambiental del sistema</h5>
+            <p>Cloud con energía renovable, compresión de imágenes post-procesado y transfer learning para reducir el costo computacional.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ SLIDE 8 — CONCLUSIÓN ══════ -->
+  <div class="slide content-slide" id="s8">
+    <div class="slide-num-badge" style="color:rgba(255,255,255,.4)">07 · Conclusión</div>
+    <div class="sidebar">
+      <h2>Una herramienta de impacto real</h2>
+      <p>EcoRuta Interactiva transforma un acto cotidiano y descentralizado en un insumo científico estructurado de alto valor.</p>
+      <p style="margin-top:12px">Elimina demoras burocráticas en el diagnóstico y permite enfocar recursos de mitigación vial con <strong style="color:#fff">precisión quirúrgica</strong>.</p>
+      <div class="cta">
+        <strong>Viabilidad técnica:</strong> Muy alta. Modelos de código abierto, sin hardware complejo para el usuario.<br><br>
+        <strong>Viabilidad económica:</strong> Moderada. Solo software libre + hosting en la nube, elegible para subsidios ambientales e innovación.
+      </div>
+    </div>
+    <div class="referencias">
+      <h3>Referencias bibliográficas</h3>
+      <div class="ref-item">
+        <div class="ref-dot"></div>
+        <p>Ascensão, F., Kindel, A., Teixeira, F. Z., et al. (2021). Road ecology in the 21st century. <em>Environmental Management, 68</em>(4), 435–448.</p>
+      </div>
+      <div class="ref-item">
+        <div class="ref-dot"></div>
+        <p>Forman, R. T., & Alexander, L. E. (1998). Road ecology in the United States: A review and synthesis. <em>Annual Review of Ecology and Systematics, 29</em>(1), 207–231.</p>
+      </div>
+      <div class="ref-item">
+        <div class="ref-dot"></div>
+        <p>Plataforma Científica Participativa. (2026). <em>Análisis de puntos críticos de colisiones de fauna silvestre en Argentina.</em> <a href="https://fauna-atropellada.org.ar/">fauna-atropellada.org.ar</a></p>
+      </div>
+      <div class="ref-item">
+        <div class="ref-dot"></div>
+        <p>PostGIS Project. (2025). <em>PostGIS Spatial Database Management Extension Reference Manual.</em> Open Source Geospatial Foundation.</p>
+      </div>
+      <div class="ref-item">
+        <div class="ref-dot"></div>
+        <p>Strubell, E., Ganesh, A. y McCallum, A. (2019). Energy and Policy Considerations for Deep Learning in NLP. <em>Proceedings ACL 2019,</em> 3645–3650.</p>
+      </div>
+      <div class="viabilidad-row">
+        <div class="viab-card">
+          <h4>✅ Impactos positivos directos</h4>
+          <p>Preservación de fauna amenazada mediante localización exacta de medidas de mitigación vial.</p>
+        </div>
+        <div class="viab-card">
+          <h4>🔄 Impactos positivos indirectos</h4>
+          <p>Educación ambiental, optimización del gasto público, reducción de costos por accidentes viales.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- ─── NAV BAR ─── -->
+<div class="nav-bar">
+  <button class="nav-btn" id="prev" onclick="goTo(current-1)" disabled>‹</button>
+  <div class="dots" id="dots"></div>
+  <div class="slide-counter" id="counter">1 / 8</div>
+  <button class="nav-btn" id="next" onclick="goTo(current+1)">›</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  const total = slides.length;
+  let current = 0;
+
+  // Build dots
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  }
+
+  function goTo(n) {
+    if (n < 0 || n >= total) return;
+    slides[current].classList.remove('active');
+    slides[current].classList.add('out-left');
+    setTimeout(() => slides[current === n ? n : current].classList.remove('out-left'), 450);
+
+    current = n;
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === current);
+      if (i !== current) s.classList.remove('out-left');
+    });
+
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    counter.textContent = (current + 1) + ' / ' + total;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === total - 1;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') goTo(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    goTo(current - 1);
+  });
+</script>
+</body>
+</html>
