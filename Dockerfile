@@ -1,7 +1,6 @@
 FROM nginx:alpine
 
 COPY *.html /usr/share/nginx/html/
-COPY img/ /usr/share/nginx/html/img/
 COPY data/all_entries.json /usr/share/nginx/html/all_entries.json
 COPY data/provincias.geojson /usr/share/nginx/html/provincias.geojson
 COPY data/area_protegida_enriched.geojson /usr/share/nginx/html/area_protegida_enriched.geojson
