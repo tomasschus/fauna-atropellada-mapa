@@ -1,9 +1,6 @@
 FROM nginx:alpine
 
-COPY mapa_calor.html /usr/share/nginx/html/mapa_calor.html
-COPY visitas_vs_accidentes.html /usr/share/nginx/html/visitas_vs_accidentes.html
-COPY dashboard.html /usr/share/nginx/html/dashboard.html
-COPY plan_mitigacion.html /usr/share/nginx/html/plan_mitigacion.html
+COPY *.html /usr/share/nginx/html/
 COPY data/all_entries.json /usr/share/nginx/html/all_entries.json
 COPY data/provincias.geojson /usr/share/nginx/html/provincias.geojson
 COPY data/area_protegida_enriched.geojson /usr/share/nginx/html/area_protegida_enriched.geojson
