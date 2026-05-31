@@ -49,7 +49,7 @@
   #modal-overlay.open { display:flex; }
   #modal {
     background:#fff; border-radius:16px;
-    width:100%; max-width:480px; margin:16px;
+    width:100%; max-width:660px; margin:16px;
     box-shadow:0 8px 48px rgba(0,0,0,.35);
     overflow:hidden;
     animation: modalIn .25s ease;
@@ -193,12 +193,12 @@
       <div class="step-panel active" id="sp-1">
         <div class="form-group">
           <label>Correo electrónico</label>
-          <input type="email" id="inp-email" placeholder="usuario@test.com" autocomplete="off">
+          <input type="email" id="inp-email" value="usuario@test.com" autocomplete="off" readonly style="background:#f5f5f5;color:#888">
           <div class="error-msg" id="err-login">Usuario o contraseña incorrectos.</div>
         </div>
         <div class="form-group">
           <label>Contraseña</label>
-          <input type="password" id="inp-pass" placeholder="••••••••">
+          <input type="password" id="inp-pass" value="12345678" readonly style="background:#f5f5f5;color:#888">
         </div>
         <div class="modal-actions">
           <button class="btn-next" onclick="loginStep()">Ingresar</button>
@@ -227,18 +227,18 @@
         <div style="max-height:340px;overflow-y:auto;padding-right:4px">
           <div class="form-row">
             <div class="form-group">
-              <label>Fecha del incidente</label>
-              <input type="date" id="f-fecha">
+              <label>Fecha del incidente <span style="font-size:10px;background:#e4f4ea;color:#2d7a4f;border-radius:10px;padding:1px 7px;font-weight:700">⏱ Auto</span></label>
+              <input type="date" id="f-fecha" disabled style="background:#f5f5f5;color:#555">
             </div>
             <div class="form-group">
-              <label>Hora aproximada</label>
-              <input type="time" id="f-hora">
+              <label>Hora aproximada <span style="font-size:10px;background:#e4f4ea;color:#2d7a4f;border-radius:10px;padding:1px 7px;font-weight:700">⏱ Auto</span></label>
+              <input type="time" id="f-hora" disabled style="background:#f5f5f5;color:#555">
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Provincia</label>
-              <select id="f-prov">
+              <label>Provincia <span style="font-size:10px;background:#e4f4ea;color:#2d7a4f;border-radius:10px;padding:1px 7px;font-weight:700">📍 GPS</span></label>
+              <select id="f-prov" disabled style="background:#f5f5f5;color:#555">
                 <option value="">Seleccionar…</option>
                 <option>Buenos Aires</option><option>Catamarca</option><option>Chaco</option>
                 <option>Chubut</option><option>Córdoba</option><option>Corrientes</option>
@@ -252,8 +252,8 @@
               </select>
             </div>
             <div class="form-group">
-              <label>Tipo de ruta</label>
-              <select id="f-tipo-ruta">
+              <label>Tipo de ruta <span style="font-size:10px;background:#e4f4ea;color:#2d7a4f;border-radius:10px;padding:1px 7px;font-weight:700">📍 GPS</span></label>
+              <select id="f-tipo-ruta" disabled style="background:#f5f5f5;color:#555">
                 <option value="">Seleccionar…</option>
                 <option>Nacional</option>
                 <option>Provincial</option>
@@ -264,12 +264,12 @@
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Número de ruta</label>
-              <input type="text" id="f-ruta" placeholder="Ej: 12, 14, RP 1">
+              <label>Número de ruta <span style="font-size:10px;background:#e4f4ea;color:#2d7a4f;border-radius:10px;padding:1px 7px;font-weight:700">📍 GPS</span></label>
+              <input type="text" id="f-ruta" disabled placeholder="— desde metadata —" style="background:#f5f5f5;color:#555">
             </div>
             <div class="form-group">
-              <label>Kilómetro</label>
-              <input type="number" id="f-km" placeholder="Ej: 342">
+              <label>Kilómetro <span style="font-size:10px;background:#e4f4ea;color:#2d7a4f;border-radius:10px;padding:1px 7px;font-weight:700">📍 GPS</span></label>
+              <input type="number" id="f-km" disabled placeholder="— desde metadata —" style="background:#f5f5f5;color:#555">
             </div>
           </div>
           <div class="form-group">
@@ -521,7 +521,35 @@ render();
 <script>
 function abrirModal() {
   document.getElementById('modal-overlay').classList.add('open');
+  setAutoFields();
   goStep(1);
+}
+const PROVINCIAS = ['Misiones','Corrientes','Jujuy','Buenos Aires','Entre Ríos','Chaco','Santa Fe','Salta','Córdoba','Mendoza'];
+const TIPOS_RUTA = ['Nacional','Provincial','Provincial','Nacional'];
+const RUTAS_N = ['12','14','9','3','34','7','40','18','226','11'];
+const RUTAS_P = ['1','2','16','17','33','21','56','75','80','4'];
+function setAutoFields() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const fechaStr = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate());
+  const horaStr  = pad(now.getHours()) + ':' + pad(now.getMinutes());
+  document.getElementById('f-fecha').value = fechaStr;
+  document.getElementById('f-hora').value  = horaStr;
+  const prov = PROVINCIAS[Math.floor(Math.random()*PROVINCIAS.length)];
+  const tipo = TIPOS_RUTA[Math.floor(Math.random()*TIPOS_RUTA.length)];
+  const rutas = tipo === 'Nacional' ? RUTAS_N : RUTAS_P;
+  const ruta  = rutas[Math.floor(Math.random()*rutas.length)];
+  const km    = Math.floor(Math.random()*480)+10;
+  const selProv = document.getElementById('f-prov');
+  for (let i=0; i<selProv.options.length; i++) {
+    if (selProv.options[i].text === prov) { selProv.selectedIndex = i; break; }
+  }
+  const selTipo = document.getElementById('f-tipo-ruta');
+  for (let i=0; i<selTipo.options.length; i++) {
+    if (selTipo.options[i].text === tipo) { selTipo.selectedIndex = i; break; }
+  }
+  document.getElementById('f-ruta').value = (tipo === 'Nacional' ? 'RN ' : 'RP ') + ruta;
+  document.getElementById('f-km').value   = km;
 }
 function cerrarModal() {
   document.getElementById('modal-overlay').classList.remove('open');
@@ -549,15 +577,7 @@ function goStep(n) {
   }
 }
 function loginStep() {
-  const email = document.getElementById('inp-email').value.trim();
-  const pass  = document.getElementById('inp-pass').value;
-  const err   = document.getElementById('err-login');
-  if (email === 'usuario@test.com' && pass === '12345678') {
-    err.classList.remove('show');
-    goStep(2);
-  } else {
-    err.classList.add('show');
-  }
+  goStep(2);
 }
 function previewPhoto(input) {
   const file = input.files[0];
